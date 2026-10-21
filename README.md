@@ -20,7 +20,8 @@ Plataforma que analiza la **compatibilidad emocional entre dos personas**. Cada 
 - **Ajuste bayesiano:** el puntaje global se refina según la consistencia entre dimensiones.
 - **Clasificación del resultado:** excelente (≥ 85), buena (≥ 70), moderada (≥ 55), baja (≥ 40) y muy baja.
 - **Visualización:** gráfico de radar que superpone ambos perfiles y gráfico de barras con la compatibilidad por dimensión (Chart.js).
-- **Reporte textual** con fortalezas, áreas de mejora y recomendaciones generadas por reglas.
+- **Reporte textual** con fortalezas (dimensiones desde 70 %), áreas de mejora (por debajo de 60 %) y recomendaciones generadas por reglas.
+- **Sin registrar tus respuestas:** el servidor solo anota el resultado, no los datos ingresados.
 
 ## Cómo funciona
 
@@ -35,7 +36,7 @@ Cuestionario (Persona A y B) → POST /api/compatibilidad
 
 ## Stack
 
-Python · FastAPI · Pydantic · NumPy · pandas · HTML/CSS/JavaScript · Chart.js
+Python · FastAPI · Pydantic · HTML/CSS/JavaScript · Chart.js · pytest
 
 ## Estructura
 
@@ -45,6 +46,7 @@ backend/
 ├── core/fuzzy.py            -> lógica difusa
 ├── core/probabilistic.py    -> ajuste bayesiano
 ├── core/analyzer.py         -> análisis y datos para los gráficos
+├── tests/                   -> pruebas con pytest
 └── test_example.py          -> ejemplo de cálculo paso a paso
 frontend/                    -> interfaz (index.html, app.js, styles.css)
 api/index.py                 -> punto de entrada para Vercel
@@ -77,6 +79,14 @@ Abre http://localhost:5500. En local, el frontend llama a `http://127.0.0.1:8000
 
 **Ejemplo de cálculo sin interfaz:** `cd backend && python test_example.py`.
 
+**Pruebas:**
+
+```bash
+cd backend
+pip install -r requirements-dev.txt
+pytest
+```
+
 ## API
 
 `POST /api/compatibilidad` con las 8 dimensiones (0–10) de cada persona:
@@ -91,7 +101,12 @@ Abre http://localhost:5500. En local, el frontend llama a `http://127.0.0.1:8000
 }
 ```
 
-Responde con `compatibilidad_porcentaje`, `compatibilidad_fuzzy` (antes del ajuste), `dimensiones`, `analisis` y `visualizacion`.
+Cada valor debe estar entre 0 y 10; fuera de ese rango la API responde `422`. Responde con `compatibilidad_porcentaje`, `compatibilidad_fuzzy` (antes del ajuste), `dimensiones`, `analisis` y `visualizacion`.
+
+## Limitaciones
+
+- **Mide similitud, no calidad:** el puntaje compara qué tan parecidas son las respuestas de ambas personas. Si las dos responden 0 en una dimensión, esa dimensión da 100 %. Es una decisión de diseño del modelo, no una valoración de la relación.
+- Los resultados dependen de respuestas autoinformadas y de funciones de membresía y pesos definidos a criterio de los autores.
 
 ## Aviso
 

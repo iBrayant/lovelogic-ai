@@ -1,6 +1,8 @@
 // Configuración de la API
-const API_URL = (window.location.hostname === 'localhost' || window.location.protocol === 'file:')
-    ? 'http://127.0.0.1:8000/api/compatibilidad'
+// En local (archivo o servidor estático con puerto) el backend corre en el puerto 8000;
+// desplegado, el API comparte dominio con el frontend.
+const API_URL = (window.location.protocol === 'file:' || window.location.port)
+    ? `http://${window.location.hostname || '127.0.0.1'}:8000/api/compatibilidad`
     : '/api/compatibilidad';
 
 // Variables globales para los gráficos
@@ -90,8 +92,6 @@ function continuarPersonaB() {
         apoyo_mutuo: parseFloat(formData.get('a_apoyo_mutuo'))
     };
     
-    console.log('✅ Persona 1 completada. Datos guardados:', datosPersonaA);
-    console.log('➡️ Pasando a Persona 2...');
     
     // Mostrar formulario de Persona B
     mostrarPersonaB();
@@ -117,33 +117,33 @@ function generarFormularioPersona(letra, titulo) {
         <div class="persona-card" style="grid-column: 1 / -1; max-width: 800px; margin: 0 auto;">
             <h3>${titulo}</h3>
             <div class="question-group">
-                <label>
+                <label for="${prefix}_comunicacion">
                     <svg class="question-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                     </svg>
                     Comunicación: Valoro la comunicación abierta y frecuente
                 </label>
                 <div class="slider-container">
-                    <input type="range" name="${prefix}_comunicacion" min="0" max="10" value="5" class="slider">
+                    <input type="range" id="${prefix}_comunicacion" name="${prefix}_comunicacion" min="0" max="10" value="5" class="slider">
                     <span class="value-display">5</span>
                 </div>
             </div>
 
             <div class="question-group">
-                <label>
+                <label for="${prefix}_valores">
                     <svg class="question-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                     </svg>
                     Valores: Mis valores fundamentales son muy importantes para mí
                 </label>
                 <div class="slider-container">
-                    <input type="range" name="${prefix}_valores" min="0" max="10" value="5" class="slider">
+                    <input type="range" id="${prefix}_valores" name="${prefix}_valores" min="0" max="10" value="5" class="slider">
                     <span class="value-display">5</span>
                 </div>
             </div>
 
             <div class="question-group">
-                <label>
+                <label for="${prefix}_conflicto">
                     <svg class="question-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <path d="M12 8v4M12 16h.01"/>
@@ -151,13 +151,13 @@ function generarFormularioPersona(letra, titulo) {
                     Conflictos: Prefiero resolver conflictos de inmediato
                 </label>
                 <div class="slider-container">
-                    <input type="range" name="${prefix}_conflicto" min="0" max="10" value="5" class="slider">
+                    <input type="range" id="${prefix}_conflicto" name="${prefix}_conflicto" min="0" max="10" value="5" class="slider">
                     <span class="value-display">5</span>
                 </div>
             </div>
 
             <div class="question-group">
-                <label>
+                <label for="${prefix}_estilo_emocional">
                     <svg class="question-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>
@@ -165,13 +165,13 @@ function generarFormularioPersona(letra, titulo) {
                     Estilo Emocional: Expreso mis emociones abiertamente
                 </label>
                 <div class="slider-container">
-                    <input type="range" name="${prefix}_estilo_emocional" min="0" max="10" value="5" class="slider">
+                    <input type="range" id="${prefix}_estilo_emocional" name="${prefix}_estilo_emocional" min="0" max="10" value="5" class="slider">
                     <span class="value-display">5</span>
                 </div>
             </div>
 
             <div class="question-group">
-                <label>
+                <label for="${prefix}_tiempo_compartido">
                     <svg class="question-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <path d="M12 6v6l4 2"/>
@@ -179,26 +179,26 @@ function generarFormularioPersona(letra, titulo) {
                     Tiempo Compartido: Me gusta pasar mucho tiempo con mi pareja
                 </label>
                 <div class="slider-container">
-                    <input type="range" name="${prefix}_tiempo_compartido" min="0" max="10" value="5" class="slider">
+                    <input type="range" id="${prefix}_tiempo_compartido" name="${prefix}_tiempo_compartido" min="0" max="10" value="5" class="slider">
                     <span class="value-display">5</span>
                 </div>
             </div>
 
             <div class="question-group">
-                <label>
+                <label for="${prefix}_intimidad">
                     <svg class="question-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                     </svg>
                     Intimidad: La cercanía física es muy importante para mí
                 </label>
                 <div class="slider-container">
-                    <input type="range" name="${prefix}_intimidad" min="0" max="10" value="5" class="slider">
+                    <input type="range" id="${prefix}_intimidad" name="${prefix}_intimidad" min="0" max="10" value="5" class="slider">
                     <span class="value-display">5</span>
                 </div>
             </div>
 
             <div class="question-group">
-                <label>
+                <label for="${prefix}_metas_futuro">
                     <svg class="question-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                         <polyline points="22 4 12 14.01 9 11.01"/>
@@ -206,13 +206,13 @@ function generarFormularioPersona(letra, titulo) {
                     Metas a Futuro: Tengo metas claras para mi futuro
                 </label>
                 <div class="slider-container">
-                    <input type="range" name="${prefix}_metas_futuro" min="0" max="10" value="5" class="slider">
+                    <input type="range" id="${prefix}_metas_futuro" name="${prefix}_metas_futuro" min="0" max="10" value="5" class="slider">
                     <span class="value-display">5</span>
                 </div>
             </div>
 
             <div class="question-group">
-                <label>
+                <label for="${prefix}_apoyo_mutuo">
                     <svg class="question-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                         <circle cx="9" cy="7" r="4"/>
@@ -221,7 +221,7 @@ function generarFormularioPersona(letra, titulo) {
                     Apoyo Mutuo: Necesito apoyo constante de mi pareja
                 </label>
                 <div class="slider-container">
-                    <input type="range" name="${prefix}_apoyo_mutuo" min="0" max="10" value="5" class="slider">
+                    <input type="range" id="${prefix}_apoyo_mutuo" name="${prefix}_apoyo_mutuo" min="0" max="10" value="5" class="slider">
                     <span class="value-display">5</span>
                 </div>
             </div>
@@ -252,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
 async function handleSubmit(e) {
     e.preventDefault();
     
-    console.log('=== 🚀 INICIANDO CÁLCULO DE COMPATIBILIDAD ===');
     
     // Recopilar datos de Persona B
     const formData = new FormData(e.target);
@@ -273,19 +272,11 @@ async function handleSubmit(e) {
         persona_b: datosPersonaB
     };
     
-    console.log('📊 Datos Persona 1:', datosPersonaA);
-    console.log('📊 Datos Persona 2:', datosPersonaB);
-    
     // Mostrar loading
     document.getElementById('formulario-section').style.display = 'none';
     document.getElementById('loading').style.display = 'block';
     
     try {
-        console.log('🌐 Enviando petición a:', API_URL);
-        console.log('📤 Payload:', JSON.stringify(data, null, 2));
-        
-        const startTime = performance.now();
-        
         // Enviar petición al backend
         const response = await fetch(API_URL, {
             method: 'POST',
@@ -295,32 +286,19 @@ async function handleSubmit(e) {
             body: JSON.stringify(data)
         });
         
-        const endTime = performance.now();
-        console.log(`⏱️ Tiempo de respuesta: ${(endTime - startTime).toFixed(2)}ms`);
-        
         if (!response.ok) {
-            console.error('❌ Error HTTP:', response.status, response.statusText);
-            throw new Error('Error en la respuesta del servidor');
+            throw new Error(`Error HTTP ${response.status}`);
         }
         
         const resultado = await response.json();
-        console.log('✅ Respuesta recibida del backend:');
-        console.log('📈 Compatibilidad:', resultado.compatibilidad_porcentaje + '%');
-        console.log('🎯 Clasificación:', resultado.analisis.clasificacion);
-        console.log('💪 Fortalezas:', resultado.analisis.fortalezas);
-        console.log('📉 Áreas de mejora:', resultado.analisis.areas_mejora);
-        console.log('💡 Recomendaciones:', resultado.analisis.recomendaciones);
-        console.log('📊 Datos completos:', resultado);
         
         // Mostrar resultados
         mostrarResultados(resultado);
         
-        console.log('=== ✨ CÁLCULO COMPLETADO ===');
         
     } catch (error) {
-        console.error('❌ ERROR:', error);
-        console.error('Stack trace:', error.stack);
-        alert('Error al calcular compatibilidad. Asegúrate de que el backend esté ejecutándose.');
+        console.error('Error al calcular la compatibilidad:', error);
+        alert('No se pudo calcular la compatibilidad. Revisa tu conexión e inténtalo de nuevo.');
         document.getElementById('loading').style.display = 'none';
         document.getElementById('formulario-section').style.display = 'block';
     }
@@ -356,7 +334,9 @@ function mostrarResultados(resultado) {
     
     // Mostrar fortalezas
     const fortalezasContent = document.getElementById('fortalezas-content');
-    fortalezasContent.innerHTML = resultado.analisis.fortalezas.map(f => `
+    fortalezasContent.innerHTML = resultado.analisis.fortalezas.length === 0
+        ? '<div>Ninguna dimensión alcanza todavía el 70 % de compatibilidad.</div>'
+        : resultado.analisis.fortalezas.map(f => `
         <div>
             <strong>${f.dimension}</strong>
             <span style="float: right; color: #ff6b9d; font-weight: 600;">${f.score.toFixed(1)}%</span>
@@ -365,7 +345,9 @@ function mostrarResultados(resultado) {
     
     // Mostrar áreas de mejora
     const mejoraContent = document.getElementById('mejora-content');
-    mejoraContent.innerHTML = resultado.analisis.areas_mejora.map(a => `
+    mejoraContent.innerHTML = resultado.analisis.areas_mejora.length === 0
+        ? '<div>Ninguna dimensión está por debajo del 60 % de compatibilidad.</div>'
+        : resultado.analisis.areas_mejora.map(a => `
         <div>
             <strong>${a.dimension}</strong>
             <span style="float: right; color: #ff6b9d; font-weight: 600;">${a.score.toFixed(1)}%</span>

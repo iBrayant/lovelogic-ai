@@ -2,10 +2,13 @@
 Módulo de Análisis y Visualización
 
 Genera reportes textuales y datos para gráficos
-Usa pandas para organizar datos
 """
-import pandas as pd
 from typing import Dict, List
+
+# Umbrales para el reporte: una dimensión es fortaleza desde 70 % y
+# área de mejora por debajo de 60 % (el mismo corte de las recomendaciones).
+UMBRAL_FORTALEZA = 70
+UMBRAL_MEJORA = 60
 
 class CompatibilityAnalyzer:
     """
@@ -61,42 +64,23 @@ class CompatibilityAnalyzer:
     
     def identify_strengths_weaknesses(self, dimension_scores: Dict[str, float]) -> Dict:
         """
-        Identifica fortalezas y áreas de mejora
+        Identifica fortalezas (hasta 3 dimensiones con score >= 70) y
+        áreas de mejora (hasta 3 dimensiones con score < 60).
+        Si ninguna dimensión cumple el criterio, la lista queda vacía.
         """
-        # Convertir a DataFrame para análisis
-        df = pd.DataFrame({
-            'dimension': list(dimension_scores.keys()),
-            'score': list(dimension_scores.values())
-        })
-        
-        # Ordenar por score
-        df = df.sort_values('score', ascending=False)
-        
-        # Top 3 fortalezas
-        fortalezas = df.head(3).to_dict('records')
-        fortalezas = [
-            {
-                "dimension": self.dimension_names[f['dimension']],
-                "score": f['score']
-            }
-            for f in fortalezas
-        ]
-        
-        # Top 3 áreas de mejora
-        debilidades = df.tail(3).to_dict('records')
-        debilidades = [
-            {
-                "dimension": self.dimension_names[d['dimension']],
-                "score": d['score']
-            }
-            for d in debilidades
-        ]
-        
+        ordenadas = sorted(dimension_scores.items(), key=lambda par: par[1], reverse=True)
+
+        def formatear(par):
+            return {"dimension": self.dimension_names[par[0]], "score": par[1]}
+
+        fortalezas = [formatear(p) for p in ordenadas if p[1] >= UMBRAL_FORTALEZA][:3]
+        debilidades = [formatear(p) for p in reversed(ordenadas) if p[1] < UMBRAL_MEJORA][:3]
+
         return {
             "fortalezas": fortalezas,
             "areas_mejora": debilidades
         }
-    
+
     def generate_recommendations(self, dimension_scores: Dict[str, float]) -> List[str]:
         """
         Genera recomendaciones basadas en las dimensiones más débiles
@@ -104,49 +88,49 @@ class CompatibilityAnalyzer:
         recommendations = []
         
         # Analizar cada dimensión
-        if dimension_scores.get("comunicacion", 100) < 60:
+        if dimension_scores.get("comunicacion", 100) < UMBRAL_MEJORA:
             recommendations.append(
                 "Comunicación: Practiquen la escucha activa y expresen sus necesidades claramente."
             )
         
-        if dimension_scores.get("valores", 100) < 60:
+        if dimension_scores.get("valores", 100) < UMBRAL_MEJORA:
             recommendations.append(
                 "Valores: Dialoguen sobre sus principios fundamentales y busquen puntos en común."
             )
         
-        if dimension_scores.get("conflicto", 100) < 60:
+        if dimension_scores.get("conflicto", 100) < UMBRAL_MEJORA:
             recommendations.append(
                 "Conflictos: Establezcan reglas para discusiones constructivas y eviten ataques personales."
             )
         
-        if dimension_scores.get("estilo_emocional", 100) < 60:
+        if dimension_scores.get("estilo_emocional", 100) < UMBRAL_MEJORA:
             recommendations.append(
                 "Estilo Emocional: Respeten sus diferencias en expresión emocional y busquen balance."
             )
         
-        if dimension_scores.get("tiempo_compartido", 100) < 60:
+        if dimension_scores.get("tiempo_compartido", 100) < UMBRAL_MEJORA:
             recommendations.append(
                 "Tiempo: Negocien expectativas sobre tiempo juntos vs. tiempo personal."
             )
         
-        if dimension_scores.get("intimidad", 100) < 60:
+        if dimension_scores.get("intimidad", 100) < UMBRAL_MEJORA:
             recommendations.append(
                 "Intimidad: Conversen abiertamente sobre necesidades de cercanía física y emocional."
             )
         
-        if dimension_scores.get("metas_futuro", 100) < 60:
+        if dimension_scores.get("metas_futuro", 100) < UMBRAL_MEJORA:
             recommendations.append(
                 "Metas: Alineen sus visiones de futuro y encuentren objetivos compartidos."
             )
         
-        if dimension_scores.get("apoyo_mutuo", 100) < 60:
+        if dimension_scores.get("apoyo_mutuo", 100) < UMBRAL_MEJORA:
             recommendations.append(
                 "Apoyo: Fortalezcan la red de soporte mutuo en momentos difíciles."
             )
         
         if not recommendations:
             recommendations.append(
-                "Excelente compatibilidad. Mantienen una relación equilibrada. Sigan cultivando la comunicación."
+                "Ninguna dimensión muestra una compatibilidad baja. Sigan cultivando la comunicación y el apoyo mutuo."
             )
         
         return recommendations
