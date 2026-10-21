@@ -120,7 +120,8 @@
             <div class="form-header">
                 <button class="btn-back" onclick="volverInicio()">← Volver</button>
                 <h2 id="form-title">Cuestionario de Compatibilidad</h2>
-                <p class="form-description" id="form-description">Persona 1: Responde usando la escala de 0 a 10</p>
+                <div class="step-indicator" id="step-indicator" aria-live="polite"></div>
+                <p class="form-description" id="form-description"></p>
             </div>
 
             <form id="compatibility-form">
@@ -129,6 +130,8 @@
                 </div>
 
                 <div class="form-actions">
+                    <button type="button" id="btn-atras" class="btn-secundario" onclick="volverAPersonaA()"
+                        style="display: none;">← Volver a Persona 1</button>
                     <button type="button" id="btn-continuar" class="btn-calcular" onclick="continuarPersonaB()"
                         style="display: none;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -164,12 +167,12 @@
             <div class="charts-container">
                 <div class="chart-box">
                     <h3>Comparación de Perfiles (Radar)</h3>
-                    <canvas id="radarChart"></canvas>
+                    <div class="chart-canvas"><canvas id="radarChart"></canvas></div>
                 </div>
 
                 <div class="chart-box">
                     <h3>Compatibilidad por Dimensión</h3>
-                    <canvas id="barChart"></canvas>
+                    <div class="chart-canvas"><canvas id="barChart"></canvas></div>
                 </div>
             </div>
 
